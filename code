@@ -1,0 +1,207 @@
+// This sample demonstrates handling intents from an Alexa skill using the Alexa Skills Kit SDK (v2).
+// Please visit https://alexa.design/cookbook for additional examples on implementing slots, dialog management,
+// session persistence, api calls, and more.
+const Alexa = require('ask-sdk-core');
+
+const LaunchRequestHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
+    },
+    handle(handlerInput) {
+        const speakOutput = 'Welcome,you can give  me an alphabet and I can help you learn it,what you want to learn?';
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(speakOutput)
+            .getResponse();
+    }
+};
+const AlphabetsIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AlphabetsIntent';
+    },
+    handle(handlerInput) {
+         const userAlphabets = handlerInput.requestEnvelope.request.intent.slots.abcd.value;
+         let speakOutput = '';
+         let repromptOutput =' What alphabet you want to learn next?';
+         
+          const combo = userAlphabets
+          switch(combo)
+          {
+            case 'a':
+                speakOutput+="A for apple , ";
+                break;
+             case 'b':
+                speakOutput+="B for ball ,";
+                break;
+                case 'c':
+                speakOutput+="C for cat ,";
+                break;
+               case 'd':
+                speakOutput+="D for dog  ,";
+                break;
+               case 'e':
+                speakOutput+="E for elephant ,";
+                break;
+                case 'f':
+                speakOutput+="F for fish , ";
+                break;
+                case 'g':
+                speakOutput+="G for gun ,";
+                break;
+                case 'h':
+                speakOutput+="H for horse ,";
+                break;
+                case 'I':
+                speakOutput+="I for ink ,";
+                break;
+                case 'j':
+                speakOutput+="J for jug ,";
+                break;
+                case 'k':
+                speakOutput+="K for kite, ";
+                break;
+                case 'l':
+                speakOutput+="L for lion ,";
+                break;
+                case 'm':
+                speakOutput+="M for mango ,";
+                break;
+                case 'n':
+                speakOutput+="N for nest , ";
+                break;
+                case 'o':
+                speakOutput+="O for owl , ";
+                break;
+                case 'p':
+                speakOutput+="P for parrot ,";
+                break;
+                case 'q':
+                speakOutput+="Q for queen , ";
+                break;
+                case 'r':
+                speakOutput+="R for rat , ";
+                break;
+                case 's':
+                speakOutput+="S for sun , ";
+                break;
+                case 'T':
+                speakOutput+="T for tree ,";
+                break;
+                case 'u':
+                speakOutput+="U for umbrella  ,";
+                break;
+                case 'v':
+                speakOutput+="V for violin ,";
+                break;
+                case 'w':
+                speakOutput+="W for watch ,";
+                break;
+                case 'x':
+                speakOutput+="X for X-mas , ";
+                break;
+                case 'y':
+                speakOutput+="Y for yak ,";
+                break;
+                case 'z':
+                speakOutput+="Z for zebra ,";
+                break;
+          }
+         
+          return handlerInput.responseBuilder
+            .speak(speakOutput + repromptOutput)
+            .reprompt(repromptOutput)
+            .getResponse();
+    
+    }
+};
+const HelpIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
+    },
+    handle(handlerInput) {
+        const speakOutput = 'You can say any  alphabet from english language. ';
+
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(speakOutput)
+            .getResponse();
+    }
+};
+const CancelAndStopIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && (Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.CancelIntent'
+                || Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.StopIntent');
+    },
+    handle(handlerInput) {
+        const speakOutput = 'Goodbye!';
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .getResponse();
+    }
+};
+const SessionEndedRequestHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'SessionEndedRequest';
+    },
+    handle(handlerInput) {
+        // Any cleanup logic goes here.
+        return handlerInput.responseBuilder.getResponse();
+    }
+};
+
+// The intent reflector is used for interaction model testing and debugging.
+// It will simply repeat the intent the user said. You can create custom handlers
+// for your intents by defining them above, then also adding them to the request
+// handler chain below.
+const IntentReflectorHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest';
+    },
+    handle(handlerInput) {
+        const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
+        const speakOutput = `You just triggered ${intentName}`;
+
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
+            .getResponse();
+    }
+};
+
+// Generic error handling to capture any syntax or routing errors. If you receive an error
+// stating the request handler chain is not found, you have not implemented a handler for
+// the intent being invoked or included it in the skill builder below.
+const ErrorHandler = {
+    canHandle() {
+        return true;
+    },
+    handle(handlerInput, error) {
+        console.log(`~~~~ Error handled: ${error.stack}`);
+        const speakOutput = `Sorry, I had trouble finding your alphabet `;
+
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(speakOutput)
+            .getResponse();
+    }
+};
+
+// The SkillBuilder acts as the entry point for your skill, routing all request and response
+// payloads to the handlers above. Make sure any new handlers or interceptors you've
+// defined are included below. The order matters - they're processed top to bottom.
+exports.handler = Alexa.SkillBuilders.custom()
+    .addRequestHandlers(
+        LaunchRequestHandler,
+       AlphabetsIntentHandler,
+        HelpIntentHandler,
+        CancelAndStopIntentHandler,
+        SessionEndedRequestHandler,
+        IntentReflectorHandler, // make sure IntentReflectorHandler is last so it doesn't override your custom intent handlers
+    )
+    .addErrorHandlers(
+        ErrorHandler,
+    )
+    .lambda();
